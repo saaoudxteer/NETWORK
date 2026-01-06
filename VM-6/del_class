@@ -1,0 +1,10 @@
+#!/bin/bash
+
+for d in VM*/; do
+  echo "deleting process .. $d"
+  (cd "$d" && rm *.class && rm *.java)
+done
+
+
+
+

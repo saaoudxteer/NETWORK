@@ -1,0 +1,32 @@
+# -*- coding: utf-8 -*-
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+VAGRANTFILE_API_VERSION = "2"
+
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+  config.vm.box = "m1reseaux"
+  config.vm.hostname = "VM1-6"
+
+  # Eth1 -> LAN3-6 (Vers le monde IPv4/VM1)
+  config.vm.network "private_network",
+    ip: "fc00:1234:3::16",
+    auto_config: false,
+    virtualbox__intnet: "LAN3-6"
+
+  # Eth2 -> LAN1-6 (Lien interne IPv6 vers VM2-6)
+  config.vm.network "private_network",
+    ip: "fc00:1234:1::16",
+    auto_config: false,
+    virtualbox__intnet: "LAN1-6"
+
+  config.vm.synced_folder ".", "/vagrant", owner: "debian-tp"
+  config.vm.synced_folder "../..", "/vagrant"
+
+  config.vm.provider "virtualbox" do |vb|
+    vb.linked_clone = true
+    vb.gui = true
+    vb.memory = "1024"
+    vb.customize ['modifyvm', :id, '--graphicscontroller', 'vmsvga']
+  end
+end

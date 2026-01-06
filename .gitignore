@@ -1,0 +1,20 @@
+#build
+*.o
+*.a
+*.so
+*.out
+build/
+bin/
+tests/test_*
+*.exe
+#vagrant
+.vagrant/
+
+#editor
+.vscode/
+.idea/
+.*swp
+.DS_Store
+# java
+.class
+
