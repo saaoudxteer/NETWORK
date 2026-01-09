@@ -1,0 +1,84 @@
+.
+├── configs
+├── docs
+│   └── Screenshot from 2026-01-08 10-54-21.png
+├── Makefile
+├── script
+│   ├── configure-tun.sh
+│   └── net
+│       ├── clean_eth.sh
+│       ├── lib.sh
+│       ├── save_caches.sh
+│       ├── vm1-6_addr.sh
+│       ├── vm1-6_routes.sh
+│       ├── vm1-6_routes_v4.sh
+│       ├── vm1_addr.sh
+│       ├── vm1_routes.sh
+│       ├── vm2-6_addr.sh
+│       ├── vm2_addr.sh
+│       ├── vm2_routes.sh
+│       ├── vm3-6_addr.sh
+│       ├── vm3-6_routes.sh
+│       ├── vm3_addr.sh
+│       └── vm3_routes.sh
+├── src
+│   ├── extremite
+│   │   ├── clean_tun.sh
+│   │   ├── ext_in.py
+│   │   ├── ext_out.py
+│   │   ├── extremite.py
+│   │   ├── iftun.py
+│   │   ├── __pycache__
+│   │   │   ├── extremite.cpython-311.pyc
+│   │   │   ├── iftun.cpython-311.pyc
+│   │   │   └── tun.cpython-311.pyc
+│   │   ├── setup_tun0.sh
+│   │   ├── test_main.py
+│   │   ├── tunnel46d.py
+│   │   └── tun.py
+│   └── iftun
+│       ├── configure-tun.sh
+│       ├── iftun.py
+│       ├── __pycache__
+│       │   └── iftun.cpython-311.pyc
+│       └── test_iftun.py
+├── test_iftun
+├── tests
+├── tree.txt
+├── VM
+│   ├── halt_all_vms.sh
+│   ├── partage
+│   ├── reload_all_vms.sh
+│   ├── start_all_vms.sh
+│   ├── VM1
+│   │   ├── config.sls
+│   │   ├── top.sls
+│   │   └── Vagrantfile
+│   ├── VM2
+│   │   ├── config.sls
+│   │   ├── top.sls
+│   │   └── Vagrantfile
+│   └── VM3
+│       ├── config.sls
+│       ├── top.sls
+│       └── Vagrantfile
+└── VM-6
+    ├── del_class
+    ├── halt_all_vms.sh
+    ├── partage
+    ├── reload_all_vms.sh
+    ├── start_all_vms.sh
+    ├── VM1-6
+    │   ├── config.sls
+    │   ├── top.sls
+    │   └── Vagrantfile
+    ├── VM2-6
+    │   ├── config.sls
+    │   ├── top.sls
+    │   └── Vagrantfile
+    └── VM3-6
+        ├── config.sls
+        ├── top.sls
+        └── Vagrantfile
+
+21 directories, 61 files

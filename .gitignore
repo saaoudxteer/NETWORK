@@ -1,20 +1,20 @@
-#build
-*.o
-*.a
-*.so
-*.out
-build/
-bin/
-tests/test_*
-*.exe
-#vagrant
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Vagrant
 .vagrant/
 
-#editor
-.vscode/
-.idea/
-.*swp
-.DS_Store
-# java
-.class
+# LaTeX build
+*.aux
+*.log
+*.out
+*.toc
+*.fls
+*.fdb_latexmk
+*.synctex.gz
 
+# OS
+.DS_Store
+Thumbs.db
