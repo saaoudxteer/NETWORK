@@ -23,3 +23,8 @@ Thumbs.db
 *.swp
 *.swo
 *~
+
+# Editor swap files
+*.swp
+*.swo
+*~
