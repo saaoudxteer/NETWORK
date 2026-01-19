@@ -1,7 +1,5 @@
 .
-├── configs
 ├── docs
-│   └── Screenshot from 2026-01-08 10-54-21.png
 ├── Makefile
 ├── script
 │   ├── configure-tun.sh
@@ -28,10 +26,6 @@
 │   │   ├── ext_out.py
 │   │   ├── extremite.py
 │   │   ├── iftun.py
-│   │   ├── __pycache__
-│   │   │   ├── extremite.cpython-311.pyc
-│   │   │   ├── iftun.cpython-311.pyc
-│   │   │   └── tun.cpython-311.pyc
 │   │   ├── setup_tun0.sh
 │   │   ├── test_main.py
 │   │   ├── tunnel46d.py
@@ -39,15 +33,11 @@
 │   └── iftun
 │       ├── configure-tun.sh
 │       ├── iftun.py
-│       ├── __pycache__
-│       │   └── iftun.cpython-311.pyc
 │       └── test_iftun.py
 ├── test_iftun
-├── tests
 ├── tree.txt
 ├── VM
 │   ├── halt_all_vms.sh
-│   ├── partage
 │   ├── reload_all_vms.sh
 │   ├── start_all_vms.sh
 │   ├── VM1
@@ -65,7 +55,6 @@
 └── VM-6
     ├── del_class
     ├── halt_all_vms.sh
-    ├── partage
     ├── reload_all_vms.sh
     ├── start_all_vms.sh
     ├── VM1-6
@@ -81,4 +70,4 @@
         ├── top.sls
         └── Vagrantfile
 
-21 directories, 61 files
+15 directories, 56 files
