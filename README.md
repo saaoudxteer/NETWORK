@@ -1,61 +1,76 @@
-# Tunnel IPv4 sur TCP/IPv6
+# IPv4 over TCP/IPv6 Tunnel
 
-Ce dépôt implémente un tunnel IPv4 encapsulé dans un flux TCP/IPv6 à partir d'une interface TUN Linux. Le scénario simule la panne d'un routeur IPv4 intermédiaire (VM2) : deux îlots IPv4 (LAN3 et LAN4) doivent continuer à communiquer au travers d'un cœur IPv6 (VM1-6/VM2-6/VM3-6).
+This repository implements an IPv4 tunnel encapsulated in a TCP/IPv6 stream using a Linux TUN interface. The scenario simulates a failure of an intermediate IPv4 router (VM2): two IPv4 islands (LAN3 and LAN4) must keep communicating through an IPv6 backbone (VM1-6/VM2-6/VM3-6).
 
-## Contexte et documents de référence
-Les documents fournis sont dans `docs/` :
-- Sujet de TP : [pageperso.lis-lab.fr_emmanuel.godard_enseignement_tps-reseaux_projet_.pdf](docs/pageperso.lis-lab.fr_emmanuel.godard_enseignement_tps-reseaux_projet_.pdf)
-- Rapport de projet : [Réseau_Projet (1).pdf](docs/R%C3%A9seau_Projet%20(1).pdf)
+## Reference documents
+The provided documents live in `docs/`:
+- Project instructions: [pageperso.lis-lab.fr_emmanuel.godard_enseignement_tps-reseaux_projet_.pdf](docs/pageperso.lis-lab.fr_emmanuel.godard_enseignement_tps-reseaux_projet_.pdf)
+- Project report: [Reseau_Projet (1).pdf](docs/R%C3%A9seau_Projet%20(1).pdf)
 
-![Problématique](docs/images/our_problem.png)
+![Problem statement](docs/images/our_problem.png)
 
-## Architecture et topologie
+## Architecture and topology
 
-Topologie initiale (VM2 opérationnelle) :
-![Topologie initiale](docs/images/intial_toplogie.png)
+Initial topology (VM2 up):
+![Initial topology](docs/images/intial_toplogie.png)
 
-Topologie avec tunnel TCP/IPv6 entre VM1-6 et VM3-6 :
-![Topologie du tunnel](docs/images/topology_diagram.png)
+Topology with the TCP/IPv6 tunnel between VM1-6 and VM3-6:
+![Tunnel topology](docs/images/topology_diagram.png)
 
-Chemin complet d'un paquet IPv4 via le tunnel :
-![Chemin IPv4 vers IPv6](docs/images/complete_path_ipv4_to_ipv6.png)
+End-to-end path of an IPv4 packet through the tunnel:
+![IPv4 to IPv6 path](docs/images/complete_path_ipv4_to_ipv6.png)
 
-### Nœuds et adressage (extrait)
-| Nœud | Rôle | IPv4 | IPv6 |
+### Nodes and addressing (excerpt)
+| Node | Role | IPv4 | IPv6 |
 | --- | --- | --- | --- |
-| VM1 | Client IPv4 (LAN3) | 172.16.2.151/28 | - |
-| VM3 | Serveur IPv4 (LAN4) | 172.16.2.183/28 | - |
-| VM1-6 | Extrémité tunnel A | 172.16.2.156/28 | fc00:1234:1::16/64 |
-| VM3-6 | Extrémité tunnel B | 172.16.2.186/28 | fc00:1234:2::36/64 |
+| VM1 | IPv4 client (LAN3) | 172.16.2.151/28 | - |
+| VM3 | IPv4 server (LAN4) | 172.16.2.183/28 | - |
+| VM1-6 | Tunnel endpoint A | 172.16.2.156/28 | fc00:1234:1::16/64 |
+| VM3-6 | Tunnel endpoint B | 172.16.2.186/28 | fc00:1234:2::36/64 |
 
-Réseaux utilisés (rappel) :
-- IPv4 LAN3 : 172.16.2.144/28
-- IPv4 LAN4 : 172.16.2.176/28
-- IPv6 LAN1-6 : fc00:1234:1::/64
-- IPv6 LAN2-6 : fc00:1234:2::/64
+Networks in use:
+- IPv4 LAN3: 172.16.2.144/28
+- IPv4 LAN4: 172.16.2.176/28
+- IPv6 LAN1-6: fc00:1234:1::/64
+- IPv6 LAN2-6: fc00:1234:2::/64
 
-## Organisation du dépôt
-- `docs/` : sujet, rapport et images.
-- `script/net/` : scripts d'adressage et de routage par VM.
-- `src/iftun/` : création de tun0 (partie 2) + test `test_iftun.py`.
-- `src/extremite/` : tunnel TCP/IPv6 (`tunnel46d.py`) et étapes intermédiaires (`ext_in.py`, `ext_out.py`, `test_main.py`).
-- `VM/` et `VM-6/` : environnements Vagrant (IPv4 et IPv6).
+## Repository layout
+- `docs/`: instructions, report, and images.
+- `script/net/`: per-VM addressing and routing scripts.
+- `src/iftun/`: TUN creation (part 2) and `test_iftun.py`.
+- `src/extremite/`: TCP/IPv6 tunnel (`tunnel46d.py`) and intermediate steps (`ext_in.py`, `ext_out.py`, `test_main.py`).
+- `VM/` and `VM-6/`: Vagrant environments (IPv4 and IPv6).
 
-## Prérequis
-- Hôte Linux avec `/dev/net/tun` et droits root.
-- Vagrant + VirtualBox (VMs fournies dans `VM/` et `VM-6/`).
+## Prerequisites
+- Linux host with `/dev/net/tun` and root access.
+- Vagrant + VirtualBox.
 - Python 3.
-- Outils de validation : `ip`, `ping`, `nc`, `iperf3`.
+- Validation tools: `ip`, `ping`, `nc`, `iperf3`.
 
-## Mise en route
+## Quick start
 
-### 1) Démarrer les VMs
+### Option A: use the Makefile (recommended)
+The root `Makefile` automates Vagrant bringup, network config, tunnel startup, and tests. Typical flow:
+```bash
+make up
+make net
+make vm2-down
+make tunnel-start
+make tun-config
+make test-l3
+make test-l4
+make test-iperf
+```
+
+### Option B: manual runbook
+
+1) Start the VMs:
 ```bash
 ./VM/start_all_vms.sh
 ./VM-6/start_all_vms.sh
 ```
 
-### 2) Configurer le réseau (dans chaque VM)
+2) Configure addressing and routes (inside each VM):
 ```bash
 # VM1
 sudo /vagrant/script/net/vm1_addr.sh
@@ -82,51 +97,52 @@ sudo /vagrant/script/net/vm3-6_addr.sh
 sudo /vagrant/script/net/vm3-6_routes.sh
 ```
 
-Astuce : `script/net/clean_eth.sh` remet les interfaces propres si nécessaire.
+Tip: `script/net/clean_eth.sh` resets interfaces if needed.
 
-### 3) Simuler la panne de VM2
+3) Simulate the VM2 failure:
 ```bash
 cd VM/VM2 && vagrant halt
 ```
 
-### 4) Lancer le tunnel TCP/IPv6
+4) Start the TCP/IPv6 tunnel (tun0 is created by the process):
 ```bash
-# VM3-6 (serveur)
+# VM3-6 (server)
 sudo python3 /vagrant/src/extremite/tunnel46d.py listen 123
 
 # VM1-6 (client)
 sudo python3 /vagrant/src/extremite/tunnel46d.py connect fc00:1234:2::36 123
 ```
 
-### 5) Configurer tun0 et les routes (exemple)
+5) Configure tun0 and routes (example):
 ```bash
-# VM1-6 : injecter LAN4 dans tun0
+# VM1-6: inject LAN4 into tun0
 sudo ip addr add 172.16.2.1/24 dev tun0
 sudo ip link set tun0 up
 sudo ip route replace 172.16.2.176/28 dev tun0
 sudo sysctl -w net.ipv4.ip_forward=1
 
-# VM3-6 : injecter LAN3 dans tun0
+# VM3-6: inject LAN3 into tun0
 sudo ip addr add 172.16.2.10/24 dev tun0
 sudo ip link set tun0 up
 sudo ip route replace 172.16.2.144/28 dev tun0
 sudo sysctl -w net.ipv4.ip_forward=1
 
-# VM1 : joindre LAN4 via VM1-6 (panne VM2)
+# VM1: reach LAN4 via VM1-6 (VM2 down)
 sudo ip route replace 172.16.2.176/28 via 172.16.2.156
 
-# VM3 : joindre LAN3 via VM3-6
+# VM3: reach LAN3 via VM3-6
 sudo ip route replace 172.16.2.144/28 via 172.16.2.186
 ```
 
-## Validation fonctionnelle
-### Couche 3 (ICMP)
+## Functional validation
+
+### Layer 3 (ICMP)
 ```bash
-# Depuis VM1
+# From VM1
 ping 172.16.2.183
 ```
 
-### Couche 4 (TCP)
+### Layer 4 (TCP)
 ```bash
 # VM3
 nc -l -p 12345
@@ -135,7 +151,7 @@ nc -l -p 12345
 echo "HELLO_TUNNEL" | nc 172.16.2.183 12345
 ```
 
-### Bande passante (iperf3)
+### Bandwidth (iperf3)
 ```bash
 # VM3
 iperf3 -s
@@ -144,7 +160,7 @@ iperf3 -s
 iperf3 -c 172.16.2.183 -n 1 -l 1M
 ```
 
-## Notes d'implémentation
-- `tunnel46d.py` crée `tun0` avec `IFF_NO_PI` et encapsule chaque paquet IPv4 avec une longueur sur 2 octets pour conserver le framing sur TCP.
-- `ext_in.py` / `ext_out.py` servent de jalons pour la partie 3 (redirection sortante et entrante).
-- `src/iftun/test_iftun.py` illustre la lecture brute de paquets sur tun0 pour la partie 2.
+## Implementation notes
+- `tunnel46d.py` creates `tun0` with `IFF_NO_PI` and frames packets with a 2-byte length header to preserve boundaries over TCP.
+- `ext_in.py` and `ext_out.py` are intermediate steps for parts 3.1 and 3.2 (incoming/outgoing redirection).
+- `src/iftun/test_iftun.py` demonstrates raw packet reads on `tun0` for part 2.
